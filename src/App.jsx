@@ -10,6 +10,11 @@ function App() {
   const [error, setError] = useState("");
   const [requestTime, setRequestTime] = useState(null);
 
+  const calculateTime = (startTime) => {
+    const endTime = new Date().getTime();
+    setRequestTime(endTime - startTime); // Set request time
+  }
+
   const fetchUser = async () => {
     if (!username.trim()) return;
 
@@ -22,8 +27,7 @@ function App() {
       const user = cache.get(username);
       if (user != null) {
         setUserData({ ...user, fromCache: true });
-        const endTime = new Date().getTime();
-        setRequestTime(endTime - startTime); // Set request time
+        calculateTime(startTime);
         setLoading(false);
         return;
       }
@@ -34,8 +38,7 @@ function App() {
       const data = await response.json();
       cache.put(username, data); // Save in cache
 
-      const endTime = new Date().getTime();
-      setRequestTime(endTime - startTime); // Set request time
+      calculateTime(startTime);
 
       setUserData({ ...data, fromCache: false });
     } catch (err) {
